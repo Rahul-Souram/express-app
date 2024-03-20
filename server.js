@@ -4,9 +4,11 @@ require("dotenv").config();
 const logger = require("morgan");
 const path = require("path");
 const errorHandler = require("./middleware/errorHandler");
+const connectDB = require("./config/dbConnection");
 
 const PORT = process.env.PORT || 8000;
 
+connectDB();
 // Built-in Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
