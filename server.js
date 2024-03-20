@@ -3,10 +3,11 @@ const app = express();
 require("dotenv").config();
 const logger = require("morgan");
 const path = require("path");
+const errorHandler = require("./middleware/errorHandler");
 
 const PORT = process.env.PORT || 8000;
 
-// Built-in Middle ware
+// Built-in Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -19,44 +20,16 @@ app.get("/", (req, res) => {
 // logger
 app.use(logger("dev"));
 
+// Include contactRoute after logger middleware
 app.use("/api/users", require("./routes/contactRoute"));
 
-// Error handling Middleware
-const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode ? res.statusCode : 500;
-  res.status(statusCode);
-
-  switch (statusCode) {
-    case 401:
-      res.json({
-        error: "UnAuthorized",
-        message: err.message,
-      });
-      break;
-    case 404:
-      res.json({
-        error: "Page not found",
-        message: err.message,
-      });
-      break;
-    case 500:
-      res.json({
-        error: "Server Error",
-        message: err.message,
-      });
-      break;
-
-    default:
-      break;
-  }
-};
-
 // error page
-app.all("*", (req, res) => {
+app.all("*", (req, res, next) => {
   res.status(404);
-  throw new Error("Route not found");
+  next(new Error("Route not found"));
 });
 
+// Include errorHandler middleware after all routes
 app.use(errorHandler);
 
 app.listen(PORT, () => {

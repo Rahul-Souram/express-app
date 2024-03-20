@@ -7,7 +7,11 @@ const getContact = (req, res) => {
 
 const createContact = (req, res) => {
   res.status(201).json({ message: "created new user", body: req.body });
-  console.log(req.body);
+  const { name, email, phone } = req.body;
+  if (!name || !email || !phone) {
+    res.status(400);
+    throw new Error("Please enter all fields");
+  }
 };
 
 const singleGet = (req, res) => {
