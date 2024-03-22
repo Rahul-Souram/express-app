@@ -24,6 +24,7 @@ app.use(logger("dev"));
 
 // Include contactRoute after logger middleware
 app.use("/api/users", require("./routes/contactRoute"));
+app.use("/api/register", require("./routes/registerRoute"));
 
 // error page
 app.all("*", (req, res, next) => {
